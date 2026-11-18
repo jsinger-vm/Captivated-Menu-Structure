@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Captivated — Interactive SEO Sitemap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --home:#1F1F1F;
+    --l1:#966746;
+    --l2:#595959;
+    --l3:#A7A9AC;
+    --l3-text:#262626;
+    --line:#C7CBCF;
+    --page-bg:#FAFAF9;
+    --opt:#B08A3E;
+    --new:#4C6B4F;
+    --review:#AD5A34;
+    --ink:#222733;
+    --muted:#6B7077;
+    --tip-bg:#1F1F1F;
+    --accent:#173A63;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--page-bg);font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;color:var(--ink);}
+
+  /* ---------- HEADER ---------- */
+  .page{max-width:1900px;margin:0 auto;padding:28px 32px 90px 32px;}
+  .brand-header{font-family:'Manrope','-apple-system',"Segoe UI",Helvetica,Arial,sans-serif;font-size:23px;font-weight:800;color:#966746;letter-spacing:0.2px;margin:0 0 14px 0;}
+  .h-title{font-size:22px;font-weight:700;color:#173A63;margin:0;}
+  .h-sub{font-size:14.5px;font-weight:600;color:var(--l1);margin:4px 0 18px 0;}
+
+  .toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;padding:14px 18px;background:#fff;border:1px solid #E4E5E7;border-radius:6px;margin-bottom:10px;}
+  .legend{display:flex;flex-wrap:wrap;align-items:center;}
+  .legend-item{display:flex;align-items:center;font-size:11.2px;color:var(--ink);white-space:nowrap;margin-right:14px;margin-bottom:8px;}
+  .lg-sw{display:inline-block;width:14px;height:14px;border-radius:3px;flex-shrink:0;margin-right:6px;}
+  .lg-sw.outline{background:#fff;border:1.5px solid #C7CBCF;}
+  .lg-badge{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;color:#fff;font-size:9px;font-weight:800;flex-shrink:0;margin-right:6px;}
+  .lg-sep{width:1px;height:16px;background:#E0E2E4;margin-right:14px;}
+
+  .toolbar-btns{display:flex;align-items:center;flex-wrap:wrap;gap:0;}
+  .toolbar-btns button{font-family:inherit;font-size:12px;font-weight:600;color:#fff;background:var(--accent);border:none;border-radius:4px;padding:7px 14px;margin-left:8px;cursor:pointer;white-space:nowrap;}
+  .toolbar-btns button:hover{background:#1F4774;}
+  .toolbar-btns button.view-btn{background:#fff;color:var(--accent);border:1.5px solid var(--accent);padding:6.5px 13px;}
+  .toolbar-btns button.view-btn:hover{background:#EEF1F4;}
+  .toolbar-btns button.view-btn.active{background:var(--accent);color:#fff;}
+  .toolbar-btns button.util-btn{background:#fff;color:#50565D;border:1.5px solid #D8DADC;padding:6.5px 13px;}
+  .toolbar-btns button.util-btn:hover{background:#F2F3F4;}
+  .toolbar-sep{display:inline-block;width:1px;height:18px;background:#D8DADC;margin-left:10px;margin-right:2px;vertical-align:middle;}
+  .search-wrap{position:relative;display:inline-flex;align-items:center;margin-left:8px;}
+  .search-input{font-family:inherit;font-size:12px;padding:6.5px 26px 6.5px 10px;border:1.5px solid #D8DADC;border-radius:4px;width:180px;color:var(--ink);}
+  .search-input:focus{outline:none;border-color:var(--accent);}
+  .search-clear{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:none;background:none;color:var(--muted);cursor:pointer;font-size:14px;line-height:1;padding:2px;display:none;}
+  .search-clear.show{display:block;}
+
+  .toolbar-instructions{font-size:12px;color:var(--muted);margin:10px 0 20px 2px;}
+  .toolbar-instructions b{color:var(--ink);}
+
+  /* ---------- SUMMARY STRIP ---------- */
+  .summary-strip{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px;}
+  .stat-chip{background:#fff;border:1px solid #E4E5E7;border-radius:6px;padding:10px 16px;min-width:150px;flex:1 1 150px;}
+  .stat-num{font-size:21px;font-weight:800;color:var(--accent);line-height:1.1;}
+  .stat-label{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.35;}
+
+  /* ---------- NOTES PANEL ---------- */
+  .notes-panel{background:#fff;border:1px solid #E4E5E7;border-radius:6px;padding:6px 18px;margin-bottom:24px;}
+  .note-row{display:flex;gap:16px;padding:11px 0;border-top:1px solid #EEF0F1;}
+  .note-row:first-child{border-top:none;}
+  .note-label{flex:0 0 220px;font-weight:700;color:var(--ink);font-size:12px;}
+  .note-text{font-size:12px;color:var(--muted);line-height:1.55;}
+
+  /* ---------- TREE ROOT ---------- */
+  .tree-scroll{overflow-x:auto;overflow-y:hidden;padding-bottom:14px;}
+  .tree-root{position:relative;}
+  .home-wrap{display:flex;justify-content:center;position:relative;padding-bottom:22px;}
+  .home-box{position:relative;background:var(--home);color:#fff;font-weight:700;font-size:14px;padding:9px 26px;border-radius:5px;letter-spacing:0.3px;cursor:pointer;}
+  .home-wrap::after{content:'';position:absolute;left:50%;bottom:0;width:0;height:22px;border-left:1.5px solid var(--line);transform:translateX(-50%);}
+
+  .l1-row{display:flex;flex-wrap:nowrap;padding-top:22px;position:relative;}
+  .l1-row::before{content:'';position:absolute;left:0;top:0;width:4200px;height:0;border-top:1.5px solid #AEB4BA;}
+  .l1-row > .col{flex:0 0 250px;width:250px;position:relative;margin-right:22px;}
+  .l1-row > .col:last-child{margin-right:0;}
+  .l1-row > .col.col-gap-after{margin-right:56px;}
+  .l1-row > .col::before{content:'';position:absolute;left:50%;top:-22px;width:0;height:22px;border-left:1.5px solid var(--line);transform:translateX(-50%);}
+
+  /* ---------- GENERIC NODE / BOX ---------- */
+  .node{position:relative;}
+  .node[data-hidden="1"]{display:none !important;}
+  .box-row{position:relative;display:flex;align-items:center;padding:3px 0;}
+  summary.box-row{cursor:pointer;list-style:none;}
+  summary.box-row::-webkit-details-marker{display:none;}
+
+  .l1-row > .col > .node{text-align:center;}
+  .l1-row > .col > .node > .box-row{display:inline-flex;}
+  .l1-row > .col > .node > .children-wrap{text-align:left;}
+
+  .children-wrap{margin-left:16px;padding-left:16px;border-left:1.5px solid var(--line);display:flex;flex-direction:column;padding-top:8px;padding-bottom:2px;position:relative;}
+  .children-wrap > .node{margin-bottom:6px;}
+  .children-wrap > .node:last-child{margin-bottom:0;}
+  .children-wrap > .node > .box-row::before{content:'';position:absolute;left:-16px;top:50%;width:16px;height:0;border-top:1.5px solid var(--line);}
+  .children-wrap > .node > .box-row::after{content:'';position:absolute;left:-19px;top:50%;width:6px;height:6px;border-radius:50%;background:var(--line);transform:translateY(-50%);}
+
+  .l1-row > .col > details.node > .children-wrap::before{content:'';position:absolute;left:0;top:0;width:109px;height:0;border-top:1.5px solid var(--line);}
+
+  .chevron{flex-shrink:0;width:11px;font-size:10px;color:var(--muted);display:inline-block;transition:transform .12s ease;transform:rotate(90deg);margin-right:6px;cursor:pointer;}
+  details:not([open]) > summary .chevron{transform:rotate(0deg);}
+  .leaf-spacer{display:inline-block;width:11px;flex-shrink:0;margin-right:6px;}
+
+  .box{position:relative;display:inline-block;vertical-align:middle;max-width:100%;padding:5px 12px;border-radius:4px;font-weight:600;line-height:1.15;white-space:nowrap;cursor:pointer;}
+  .box:hover{filter:brightness(1.07);}
+  .box .label{display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:middle;}
+  .box.lvl1{background:var(--l1);color:#fff;font-size:12.5px;max-width:246px;}
+  .box.lvl2{background:var(--l2);color:#fff;font-size:11.8px;max-width:228px;}
+  .box.lvl3{background:var(--l3);color:var(--l3-text);font-size:11.3px;max-width:222px;}
+  .box.context-only{opacity:0.55;}
+  .box.search-match{outline:2px solid var(--accent);outline-offset:1px;}
+
+  .badge{position:absolute;top:-6px;right:-6px;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:800;border:1.5px solid #fff;flex-shrink:0;}
+  .b-opt{background:var(--opt);}
+  .b-new{background:var(--new);}
+  .b-review{background:var(--review);}
+  .box.flag-opt{box-shadow:0 0 0 2px var(--opt);}
+  .box.flag-new{box-shadow:0 0 0 2px var(--new);}
+  .box.flag-review{box-shadow:0 0 0 2px var(--review);}
+
+  /* ---------- TOOLTIP ---------- */
+  .tip{visibility:hidden;opacity:0;position:absolute;left:50%;transform:translateX(-50%);top:100%;margin-top:6px;z-index:40;background:var(--tip-bg);color:#fff;border-radius:5px;padding:8px 10px;font-size:11px;line-height:1.5;width:max-content;max-width:270px;font-weight:400;transition:opacity .1s ease;pointer-events:none;}
+  .box-row:hover .tip{visibility:visible;opacity:1;}
+  .tip-crumb{display:block;color:#B9C2CD;font-size:10px;margin-bottom:3px;}
+  .tip-extra:empty{display:none;}
+
+  .footer-note{margin-top:34px;font-size:11px;color:var(--muted);border-left:2px solid #173A63;padding-left:12px;max-width:720px;}
+
+  /* ---------- DETAIL PANEL ---------- */
+  .detail-panel{position:fixed;right:20px;bottom:20px;width:380px;max-width:calc(100vw - 40px);max-height:72vh;overflow-y:auto;background:#fff;border-radius:8px;box-shadow:0 10px 32px rgba(20,22,26,0.22);border:1px solid #E4E5E7;border-left-width:5px;z-index:500;}
+  .detail-panel[hidden]{display:none;}
+  .detail-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:14px 16px 10px 16px;border-bottom:1px solid #EEF0F1;}
+  .detail-title{font-weight:800;font-size:13.5px;color:var(--ink);line-height:1.3;}
+  .detail-status-chip{display:inline-flex;align-items:center;font-size:10.5px;font-weight:700;padding:2.5px 9px;border-radius:20px;color:#fff;margin-top:6px;}
+  .detail-close{background:none;border:none;font-size:20px;line-height:1;color:var(--muted);cursor:pointer;padding:0 2px;flex-shrink:0;}
+  .detail-close:hover{color:var(--ink);}
+  .detail-body{padding:12px 16px 16px 16px;font-size:12px;color:var(--ink);}
+  .detail-row{margin-bottom:11px;}
+  .detail-row:last-child{margin-bottom:0;}
+  .detail-k{font-size:10px;font-weight:700;color:var(--muted);margin-bottom:2px;letter-spacing:0.2px;}
+  .detail-v{font-size:12.5px;color:var(--ink);line-height:1.55;}
+  .detail-v a{color:var(--accent);text-decoration:none;word-break:break-all;}
+  .detail-v a:hover{text-decoration:underline;}
+
+  @media (max-width:640px){
+    .detail-panel{left:12px;right:12px;width:auto;max-width:none;bottom:12px;}
+    .page{padding:20px 16px 90px 16px;}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="brand-header">CAPTIVATED</div>
+  <h1 class="h-title">Interactive SEO Sitemap</h1>
+  <div class="h-sub">Current Website Architecture + 90-Day SEO Plan</div>
+
+  <div class="toolbar">
+    <div class="legend">
+      <span class="legend-item"><span class="lg-sw" style="background:var(--home);"></span>Home</span>
+      <span class="legend-item"><span class="lg-sw" style="background:var(--l1);"></span>Level 1</span>
+      <span class="legend-item"><span class="lg-sw" style="background:var(--l2);"></span>Level 2</span>
+      <span class="legend-item"><span class="lg-sw" style="background:var(--l3);"></span>Level 3</span>
+      <span class="lg-sep"></span>
+      <span class="legend-item"><span class="lg-sw outline"></span>Current — no Q1 change</span>
+      <span class="legend-item"><span class="lg-badge" style="background:var(--opt);">O</span>Q1 Optimization</span>
+      <span class="legend-item"><span class="lg-badge" style="background:var(--new);">N</span>New Q1 Page</span>
+      <span class="legend-item"><span class="lg-badge" style="background:var(--review);">R</span>Review / Consolidation</span>
+    </div>
+    <div class="toolbar-btns">
+      <button id="viewCurrent" type="button" class="view-btn">Current Site</button>
+      <button id="viewProposed" type="button" class="view-btn">90-Day Proposed</button>
+      <button id="viewChanges" type="button" class="view-btn">Changes Only</button>
+      <span class="toolbar-sep"></span>
+      <span class="search-wrap">
+        <input id="searchInput" class="search-input" type="text" placeholder="Search page or URL…" autocomplete="off">
+        <button id="searchClear" class="search-clear" type="button" aria-label="Clear search">×</button>
+      </span>
+      <span class="toolbar-sep"></span>
+      <button id="expandAll" type="button" class="util-btn">Expand all</button>
+      <button id="collapseAll" type="button" class="util-btn">Collapse all</button>
+      <button id="resetView" type="button" class="util-btn">Reset</button>
+    </div>
+  </div>
+  <div class="toolbar-instructions">Click a branch's <b>arrow</b> to expand or collapse it. Click any <b>page box</b> to open its detail panel — URL, status, role, and Q1 action. Hover a page for a quick note. Use <b>Current Site / 90-Day Proposed / Changes Only</b> to compare architectures — <b>Q1 Optimization</b> and <b>Review / Consolidation</b> badges mark existing pages and are unaffected by this filter; only new Q1 pages are added or removed. <b>Search</b> filters by page name or URL.</div>
+
+  <div class="summary-strip" id="summaryStrip"></div>
+
+  <div class="notes-panel">
+    <div class="note-row">
+      <div class="note-label">Mapped Content Support</div>
+      <div class="note-text">Three additional Q1 content actions will be selected from existing content based on search evidence, commercial support, proof value, and customer journey. These are content themes, not committed sitemap URLs, so they are not shown as nodes below. Candidate themes: missed-call recovery, appointment reminders, automation/follow-up, healthcare communication, text-to-pay education, and implementation/adoption.</div>
+    </div>
+    <div class="note-row">
+      <div class="note-label">Missed Call Text Back</div>
+      <div class="note-text">Validated as an opportunity, but not a standalone Q1 page. It is mapped across <code>/product/</code>, <code>/product/features/landline-texting/</code>, and <code>/product/features/text-automation/</code> instead.</div>
+    </div>
+    <div class="note-row">
+      <div class="note-label">Conditional / Future — Not Included in Q1</div>
+      <div class="note-text">ServiceTitan and Jobber remain conditional integration / coexistence opportunities only (potential future destinations: <code>/integrations/servicetitan/</code>, <code>/integrations/jobber/</code>). Creation is conditional on verifying the actual product relationship — neither is a committed Q1 page.</div>
+    </div>
+    <div class="note-row">
+      <div class="note-label">Resources: Security, Compliance &amp; Trust</div>
+      <div class="note-text">Security, Compliance &amp; Trust content is surfaced under a "Resources" section for visibility, modeled on Birdeye's approach of promoting compliance as proof of scale rather than hiding it.</div>
+    </div>
+    <div class="note-row">
+      <div class="note-label">Legal &amp; Policy Navigation</div>
+      <div class="note-text">Terms, Privacy, data-request, and billing-terms pages are consolidated into a single "Legal" link in the site footer, modeled on how Podium organizes the same content, keeping routine policy pages out of primary navigation while every page stays reachable.</div>
+    </div>
+  </div>
+
+  <div class="tree-root">
+    <div class="home-wrap">
+      <div class="home-box" id="homeBox">HOME</div>
+    </div>
+    <div class="tree-scroll"><div class="l1-row" id="treeContainer"></div></div>
+  </div>
+
+  <div class="footer-note" id="footerNote"></div>
+
+</div>
+
+<div id="detailPanel" class="detail-panel" hidden>
+  <div class="detail-header">
+    <div>
+      <div class="detail-title" id="detailTitle"></div>
+      <span class="detail-status-chip" id="detailStatusChip"></span>
+    </div>
+    <button class="detail-close" id="detailClose" aria-label="Close">×</button>
+  </div>
+  <div class="detail-body" id="detailBody"></div>
+</div>
+
+<script>
+const DATA = [{"id": "product", "label": "Product", "url": "/product/", "status": "opt", "role": "Primary / canonical Business Texting acquisition page — the intended owner of the broad category.", "q1action": "Reposition around broad professional Business Texting intent: operational fit, shared team visibility, practical automation, straightforward adoption, and (where approved) site-based / unlimited-user licensing. Routes visitors and internal authority to the capability pages below.", "searchRole": "J1 / J4 — Primary Business Texting acquisition", "direction": "~8,000–10,000/mo direct category demand · High priority", "children": [{"id": "product-features", "label": "Features", "url": "/product/features/", "status": "opt", "role": "Capability / navigation hub for the Product section. Not repositioned as a second broad Business Texting page.", "q1action": "Architecture refinement: update navigation, copy, and internal links as the six new capability pages below are created, so /product/features/ keeps routing authority to dedicated capability pages while /product/ owns the broad category.", "searchRole": "Capability / navigation hub", "direction": "Existing site infrastructure · Support priority", "children": [{"id": "product-features-landline-texting", "label": "Landline Texting", "url": "/product/features/landline-texting/", "status": "new", "role": "Search-acquisition page for texting from an existing business landline number.", "q1action": "New page — first-wave launch. Answers adjacent informational questions and connects back to the canonical Business Texting page. Missed Call Text Back is mapped across this page rather than getting its own URL.", "searchRole": "J1 / J4 — Search acquisition", "direction": "~500–600/mo commercial demand · High priority"}, {"id": "product-features-shared-sms-inbox", "label": "Shared SMS Inbox", "url": "/product/features/shared-sms-inbox/", "status": "new", "role": "Search-acquisition page addressing fragmented conversations, ownership, handoffs, shared visibility, and continuity.", "q1action": "New page — first-wave launch, using shared SMS inbox as the clearest validated search expression of this problem.", "searchRole": "J2 / J5 — Search acquisition", "direction": "~300/mo validated demand · High priority"}, {"id": "product-features-appointment-reminders", "label": "Appointment Reminders", "url": "/product/features/appointment-reminders/", "status": "new", "role": "Commercial owner for appointment-reminder / SMS-reminder search intent.", "q1action": "New page — first-wave launch, supported by existing no-show and appointment content.", "searchRole": "J3 / J5 — Search acquisition", "direction": "~1,500+/mo directional demand · High priority"}, {"id": "product-features-text-automation", "label": "Text Automation", "url": "/product/features/text-automation/", "status": "new", "role": "Commercial owner for automated texting, customer follow-up, and repetitive communication workflows.", "q1action": "New page — first-wave launch. Missed Call Text Back is mapped across this page rather than getting its own URL.", "searchRole": "J3 / J4 — Search acquisition", "direction": "~1,800+/mo directional demand · High priority"}, {"id": "product-features-two-way-business-texting", "label": "Two-Way Business Texting", "url": "/product/features/two-way-business-texting/", "status": "new", "role": "Supporting capability page for validated two-way business-texting intent.", "q1action": "New page — first-wave launch. A narrower capability page, linked clearly back to the canonical /product/ Business Texting destination.", "searchRole": "J1 / J2 — Capability support", "direction": "Distinct validated two-way intent · Medium–High priority"}, {"id": "product-features-text-to-pay", "label": "Text-to-Pay", "url": "/product/features/text-to-pay/", "status": "new", "role": "Supporting capability page for software-relevant text-payment workflows.", "q1action": "New page — first-wave launch, targeting software-relevant text-payment workflow intent while avoiding broad payment-processor terms.", "searchRole": "J3 / J4 — Capability support", "direction": "~1,500+/mo directional demand · Medium priority"}]}]}, {"id": "alternatives", "label": "Alternatives", "url": null, "status": "current", "role": "New site section that does not exist today. Holds the one comparison page committed for Q1.", "q1action": "No specific Q1 change assigned.", "children": [{"id": "alternatives-podium", "label": "Podium Alternative", "url": "/alternatives/podium/", "status": "new", "role": "Bottom-funnel comparison / search-acquisition page — the only competitor-alternative page committed in Q1.", "q1action": "New page — first-wave launch, using only substantiated claims about operational fit, workflow, team use, usability, and software complexity.", "searchRole": "J4 / J2 — Bottom-funnel acquisition", "direction": "~300/mo · low difficulty, switching intent · High priority"}]}, {"id": "find-your-fit", "label": "Find Your Fit", "url": "/find-your-fit/", "status": "current", "role": "Existing buyer-fit navigation hub.", "q1action": "No specific Q1 change assigned.", "children": [{"id": "find-your-fit-enterprise", "label": "Enterprise", "url": "/find-your-fit/enterprise/", "status": "opt", "role": "Larger-organization / enterprise messaging destination — commercial infrastructure plus secondary SEO. Demonstrates Captivated's ability to scale without redefining the primary ICP around enterprise buyers.", "q1action": "Optimize the existing page for larger-organization and enterprise-messaging needs. No separate Enterprise or Multi-Location SEO page is being created.", "searchRole": "J5 / J4 — Commercial infrastructure + secondary SEO", "direction": "~1,000–1,500/mo directional demand · Medium priority"}, {"id": "find-your-fit-multi-departments", "label": "Multi-Departments", "url": "/find-your-fit/multi-departments/", "status": "current"}, {"id": "find-your-fit-small-business", "label": "Small Business", "url": "/find-your-fit/small-business/", "status": "current"}]}, {"id": "industries", "label": "Industries", "url": "/industries/", "status": "current", "role": "Industries navigation hub. All six live vertical pages are reviewed in the Q1 six-industry audit; Lawn Care, Healthcare, and Automotive receive prioritized deeper optimization.", "q1action": "No specific Q1 change assigned.", "children": [{"id": "industries-restaurants", "label": "Restaurants", "url": "/industries/restaurants/", "status": "current", "role": "Proof-first / adjacent opportunity. Reviewed in the six-page industry audit; not committed to Q1 optimization unless the audit surfaces a clear gap."}, {"id": "industries-golf-courses", "label": "Golf Courses", "url": "/industries/golf-courses/", "status": "current", "role": "Commercial / partnership proof. Reviewed in the six-page industry audit; direct search opportunity is comparatively small."}, {"id": "industries-home-services", "label": "Home Services", "url": "/industries/home-services/", "status": "current", "role": "Problem-led / proof overlay. Reviewed in the six-page industry audit; emphasis on missed calls, lead response, reminders, and coexistence with field-service platforms."}, {"id": "industries-lawn-care", "label": "Lawn Care", "url": "/industries/lawn-care/", "status": "opt", "role": "Tier 1 core commercial vertical — customer concentration, demonstrated fit, relationships, and proof.", "q1action": "Strengthen operating problems, capabilities, customer proof, partnerships, internal pathways, and conversion support.", "searchRole": "Tier 1 core commercial vertical", "direction": "Commercially important despite limited direct search demand"}, {"id": "industries-automotive", "label": "Automotive", "url": "/industries/automotive/", "status": "opt", "role": "Secondary organic acquisition vertical.", "q1action": "Optimize around validated automotive texting terms, follow-up workflows, and relevant evidence.", "searchRole": "Secondary organic acquisition vertical", "direction": "~130/mo across two tightly relevant terms"}, {"id": "industries-healthcare", "label": "Healthcare", "url": "/industries/healthcare/", "status": "opt", "role": "Tier 1 primary organic search-growth vertical.", "q1action": "Strengthen approved healthcare/HIPAA/compliance messaging, patient communication, secure texting, appointment workflows, and relevant proof.", "searchRole": "Tier 1 primary organic search-growth vertical", "direction": "~2,160/mo direct-fit search demand"}]}, {"id": "integrations", "label": "Integrations", "url": "/integrations/", "status": "current", "role": "Existing integrations hub. ServiceTitan and Jobber are conditional future integration/coexistence opportunities only — see note below — and are not committed Q1 pages."}, {"id": "pricing", "label": "Pricing", "url": "/pricing/", "status": "current"}, {"id": "resources", "label": "Resources", "url": null, "status": "current", "role": "Security, Compliance & Trust content, surfaced under Resources for visibility — modeled on Birdeye's approach of promoting compliance as proof of scale — rather than buried in the footer.", "q1action": "No specific Q1 change assigned.", "children": [{"id": "compliance", "label": "Compliance (TCR/TCPA/10DLC)", "url": "/compliance/", "status": "current"}, {"id": "hipaa-security", "label": "HIPAA & Security", "url": "/hipaa-security/", "status": "current"}, {"id": "safe-text", "label": "Safe Text (TCPA Compliance)", "url": "/safe-text/", "status": "current"}, {"id": "security-and-compliance", "label": "Security and Compliance", "url": "/security-and-compliance/", "status": "current"}]}, {"id": "success-stories", "label": "Success Stories", "url": "/success-stories/", "status": "opt", "role": "Proof / reputation foundation for the whole site — not a conventional keyword-targeted page optimization.", "q1action": "Q1 Proof / Reputation Work: audit existing customer evidence, extract attributable quotes and measurable outcomes across use cases, industries, and capabilities, then help distribute verified proof into relevant commercial and industry pages. Counts as one of the four mapped Q1 content actions."}, {"id": "who-we-are", "label": "Who We Are", "url": "/who-we-are/", "status": "current", "children": [{"id": "why-captivated", "label": "Why Captivated", "url": "/why-captivated/", "status": "current"}]}, {"id": "faq", "label": "FAQ", "url": "/faq/", "status": "current"}, {"id": "support", "label": "Support", "url": "/support/", "status": "current"}, {"id": "demo-conversion", "label": "Demo / Conversion", "url": null, "status": "current", "role": "Existing conversion pathway pages.", "q1action": "No specific Q1 change assigned.", "children": [{"id": "demo", "label": "Demo", "url": "/demo/", "status": "current"}, {"id": "sign-up", "label": "Sign Up", "url": "/sign-up/", "status": "current"}, {"id": "contact", "label": "Contact", "url": "/contact/", "status": "current"}, {"id": "thank-you", "label": "Thank You", "url": "/thank-you/", "status": "current"}]}, {"id": "blog", "label": "Blog", "url": "/blog/", "status": "current", "role": "Existing blog. Q1 mapped-content work draws on this inventory (refresh, consolidate, repurpose, link) rather than assigning specific blog URLs a Q1 optimization status in advance.", "q1action": "No specific Q1 change assigned.", "children": [{"id": "blog-articles-group", "label": "Articles (47)", "url": null, "status": "current", "children": [{"id": "article-blog-3-ways-harness-customer-responsiveness-technology", "label": "3 Ways to Harness Customer Responsiveness…", "url": "/blog/3-ways-harness-customer-responsiveness-technology/", "status": "current", "role": "3 Ways to Harness Customer Responsiveness through Technology"}, {"id": "article-blog-3reasons", "label": "3 Reasons Your Business Should Text", "url": "/blog/3reasons/", "status": "current"}, {"id": "article-blog-5-best-practices-for-texting-your-customers", "label": "5 Best Practices For Texting Your…", "url": "/blog/5-best-practices-for-texting-your-customers/", "status": "current", "role": "5 Best Practices For Texting Your Customers"}, {"id": "article-blog-5-ingredients-when-creating-hug-worthy-software", "label": "5 Ingredients when creating Hug-worthy…", "url": "/blog/5-ingredients-when-creating-hug-worthy-software/", "status": "current", "role": "5 Ingredients when creating Hug-worthy Software"}, {"id": "article-blog-7-types-of-text-messages-to-send-customers-as-part-of-your-digital-communication-game-plan", "label": "7 Types of Text Messages To Send…", "url": "/blog/7-types-of-text-messages-to-send-customers-as-part-of-your-digital-communication-game-plan/", "status": "current", "role": "7 Types of Text Messages To Send Customers As Part of Your Digital Communication Game Plan"}, {"id": "article-blog-a-surefire-way-insurance-agents-can-improve-engagement-organization", "label": "A Surefire Way Insurance Agents can…", "url": "/blog/a-surefire-way-insurance-agents-can-improve-engagement-organization/", "status": "current", "role": "A Surefire Way Insurance Agents can Improve Engagement & Organization"}, {"id": "article-blog-another-captivated-success-story-advantage-home-health-care", "label": "Another Captivated Success Story:…", "url": "/blog/another-captivated-success-story-advantage-home-health-care/", "status": "current", "role": "Another Captivated Success Story: Advantage Home Health Care"}, {"id": "article-blog-another-captivated-success-story-beacon-center", "label": "Another Captivated Success Story: Beacon…", "url": "/blog/another-captivated-success-story-beacon-center/", "status": "current", "role": "Another Captivated Success Story: Beacon Center"}, {"id": "article-blog-another-captivated-success-story-coast-air-center", "label": "Another Captivated Success Story: Coast…", "url": "/blog/another-captivated-success-story-coast-air-center/", "status": "current", "role": "Another Captivated Success Story: Coast Air Center"}, {"id": "article-blog-another-captivated-success-story-elements-lawn-pest", "label": "Another Captivated Success Story:…", "url": "/blog/another-captivated-success-story-elements-lawn-pest/", "status": "current", "role": "Another Captivated Success Story: Elements Lawn & Pest"}, {"id": "article-blog-another-captivated-success-story-northpark-community-credit-union", "label": "Another Captivated Success Story:…", "url": "/blog/another-captivated-success-story-northpark-community-credit-union/", "status": "current", "role": "Another Captivated Success Story: NorthPark Community Credit Union"}, {"id": "article-blog-another-captivated-success-story-northside-ent", "label": "Another Captivated Success Story:…", "url": "/blog/another-captivated-success-story-northside-ent/", "status": "current", "role": "Another Captivated Success Story: Northside ENT"}, {"id": "article-blog-are-those-real", "label": "Are those real?", "url": "/blog/are-those-real/", "status": "current"}, {"id": "article-blog-become-the-inside-connection-for-your-customers", "label": "“I’ve Got A Guy:” How You Can Become The…", "url": "/blog/become-the-inside-connection-for-your-customers/", "status": "current", "role": "“I’ve Got A Guy:” How You Can Become The Inside Connection For Your Customers"}, {"id": "article-blog-business-texting-whoda-thunk-it", "label": "Business texting; who'da thunk it!", "url": "/blog/business-texting-whoda-thunk-it/", "status": "current"}, {"id": "article-blog-cant-chase-dont-run", "label": "They can't chase you if you don't run!", "url": "/blog/cant-chase-dont-run/", "status": "current"}, {"id": "article-blog-collecting-payments-securely-via-mobile-is-easy-to-do-heres-how-your-business-should-be-doing-it", "label": "Collecting Payments Securely Via Mobile…", "url": "/blog/collecting-payments-securely-via-mobile-is-easy-to-do-heres-how-your-business-should-be-doing-it/", "status": "current", "role": "Collecting Payments Securely Via Mobile Is Easy To Do – Here’s How Your Business Should Be Doing It"}, {"id": "article-blog-compelling-case-new-channel-business-communication", "label": "The Compelling Case for more efficient…", "url": "/blog/compelling-case-new-channel-business-communication/", "status": "current", "role": "The Compelling Case for more efficient communication. Business Texting for all ages."}, {"id": "article-blog-competitor-shutting-down-their-platform-in-2022", "label": "Competitor shutting down their platform…", "url": "/blog/competitor-shutting-down-their-platform-in-2022/", "status": "current", "role": "Competitor shutting down their platform in 2022"}, {"id": "article-blog-confessions-of-a-cereal-entrepreneur", "label": "Confessions of a “Cereal” Entrepreneur", "url": "/blog/confessions-of-a-cereal-entrepreneur/", "status": "current"}, {"id": "article-blog-emerging-consumer-research-on-the-future-of-mobile-payments", "label": "The Cost of Convenience: Emerging…", "url": "/blog/emerging-consumer-research-on-the-future-of-mobile-payments/", "status": "current", "role": "The Cost of Convenience: Emerging Consumer Research on Payment Portals, the Hidden Costs of Merchant Accounts & Payment Processors, & the Future of Mobile Payments"}, {"id": "article-blog-endless-possibilities-automation-events-workflows-part-1", "label": "Endless Possibilities: Automation Events…", "url": "/blog/endless-possibilities-automation-events-workflows-part-1/", "status": "current", "role": "Endless Possibilities: Automation Events & Workflows (Part 1)"}, {"id": "article-blog-endless-possibilities-automation-events-workflows-part-2", "label": "Endless Possibilities: Automation Events…", "url": "/blog/endless-possibilities-automation-events-workflows-part-2/", "status": "current", "role": "Endless Possibilities: Automation Events & Workflows (Part 2)"}, {"id": "article-blog-from-hero-to-zero", "label": "From Hero to Zero", "url": "/blog/from-hero-to-zero/", "status": "current"}, {"id": "article-blog-giving-thanks-at-captivated", "label": "Giving Thanks at Captivated", "url": "/blog/giving-thanks-at-captivated/", "status": "current"}, {"id": "article-blog-glory-days-ahead", "label": "Glory Days Ahead", "url": "/blog/glory-days-ahead/", "status": "current"}, {"id": "article-blog-history-and-growth-of-sms-mms-texting-as-a-marketing-channel", "label": "“Just Text Me”: The History And Growth of…", "url": "/blog/history-and-growth-of-sms-mms-texting-as-a-marketing-channel/", "status": "current", "role": "“Just Text Me”: The History And Growth of SMS/MMS Texting As A Marketing Channel"}, {"id": "article-blog-holding-your-it-staff-accountable", "label": "Getting to know the man behind the curtain", "url": "/blog/holding-your-it-staff-accountable/", "status": "current"}, {"id": "article-blog-hospitality-in-texting-cadences-for-catering-delivery-and-services", "label": "Hospitality in Texting: Cadences for…", "url": "/blog/hospitality-in-texting-cadences-for-catering-delivery-and-services/", "status": "current", "role": "Hospitality in Texting: Cadences for Catering, Delivery, and Services"}, {"id": "article-blog-how-small-businesses-are-winning-big-with-text-messaging", "label": "How Small Businesses Are Winning Big With…", "url": "/blog/how-small-businesses-are-winning-big-with-text-messaging/", "status": "current", "role": "How Small Businesses Are Winning Big With Text Messaging"}, {"id": "article-blog-learn-to-play-with-those-and", "label": "Learn to play with those and…", "url": "/blog/learn-to-play-with-those-and/", "status": "current"}, {"id": "article-blog-listening-with-your-eyes", "label": "Listening with your eyes", "url": "/blog/listening-with-your-eyes/", "status": "current"}, {"id": "article-blog-make-a-silk-purse-out-of-a-sows-ear", "label": "Make a silk purse out of a sow’s ear", "url": "/blog/make-a-silk-purse-out-of-a-sows-ear/", "status": "current"}, {"id": "article-blog-meet-virtual-door-knock-a-modern-seamless-way-for-field-teams-to-connect", "label": "Meet Virtual Door Knock: A Modern,…", "url": "/blog/meet-virtual-door-knock-a-modern-seamless-way-for-field-teams-to-connect/", "status": "current", "role": "Meet Virtual Door Knock: A Modern, Seamless Way for Field Teams to Connect"}, {"id": "article-blog-mentions-bring-the-right-people-into-the-right-conversations-instantly", "label": "Bring the Right People Into the Right…", "url": "/blog/mentions-bring-the-right-people-into-the-right-conversations-instantly/", "status": "current", "role": "Bring the Right People Into the Right Conversations — Instantly"}, {"id": "article-blog-poor-customer-service-really", "label": "What does Poor Customer Service REALLY do?", "url": "/blog/poor-customer-service-really/", "status": "current"}, {"id": "article-blog-privacy-in-texting-why-hipaa-and-soc-2-compliance-matters-for-the-medical-industry-shelters-and-care-providers", "label": "Privacy in Texting: Why HIPAA and SOC-2…", "url": "/blog/privacy-in-texting-why-hipaa-and-soc-2-compliance-matters-for-the-medical-industry-shelters-and-care-providers/", "status": "current", "role": "Privacy in Texting: Why HIPAA and SOC-2 Compliance Matters for the Medical Industry, Shelters, and Care Providers"}, {"id": "article-blog-reply-stop-to-opt-out-avoiding-common-text-marketing-mistakes", "label": "Reply “STOP” to Opt Out: Avoiding Common…", "url": "/blog/reply-stop-to-opt-out-avoiding-common-text-marketing-mistakes/", "status": "current", "role": "Reply “STOP” to Opt Out: Avoiding Common Text Marketing Mistakes"}, {"id": "article-blog-somebody-please-pick-up", "label": "Somebody, Please Pick Up.", "url": "/blog/somebody-please-pick-up/", "status": "current"}, {"id": "article-blog-thank-your-customers-more-effectively-and-more-easily-all-year-round", "label": "4 Ways To Thank Your Customers More…", "url": "/blog/thank-your-customers-more-effectively-and-more-easily-all-year-round/", "status": "current", "role": "4 Ways To Thank Your Customers More Effectively – And More Easily – All Year Round"}, {"id": "article-blog-the-life-changing-magic-of-tidying-up-bloated-software", "label": "The life-changing magic of tidying up…", "url": "/blog/the-life-changing-magic-of-tidying-up-bloated-software/", "status": "current", "role": "The life-changing magic of tidying up bloated software"}, {"id": "article-blog-the-player-coach-is-back", "label": "The PLAYER-COACH IS BACK", "url": "/blog/the-player-coach-is-back/", "status": "current"}, {"id": "article-blog-the-sunken-cost-of-no-shows-why-theyre-rising-and-how-to-stop-them", "label": "The Sunken Cost of No-Shows: Why They’re…", "url": "/blog/the-sunken-cost-of-no-shows-why-theyre-rising-and-how-to-stop-them/", "status": "current", "role": "The Sunken Cost of No-Shows: Why They’re Rising — and How to Stop Them"}, {"id": "article-blog-whats-the-deal-with-10dlc-and-why-do-i-need-approval", "label": "What’s the Deal With 10DLC — And Why Do I…", "url": "/blog/whats-the-deal-with-10dlc-and-why-do-i-need-approval/", "status": "current", "role": "What’s the Deal With 10DLC — And Why Do I Need Approval?"}, {"id": "article-blog-why-captivated-business-texting-stands-out-in-a-crowded-market", "label": "Why Captivated Business Texting Stands…", "url": "/blog/why-captivated-business-texting-stands-out-in-a-crowded-market/", "status": "current", "role": "Why Captivated Business Texting Stands Out in a Crowded Market"}, {"id": "article-blog-your-extravagant-phone-system-costs-you-more-than-what-you-paid-for-it", "label": "Your extravagant phone system costs you…", "url": "/blog/your-extravagant-phone-system-costs-you-more-than-what-you-paid-for-it/", "status": "current", "role": "Your extravagant phone system costs you more than what you paid for it."}, {"id": "article-blog-your-silent-phone-line", "label": "Captivated – Your Silent Phone Line", "url": "/blog/your-silent-phone-line/", "status": "current"}]}, {"id": "blog-tags-group", "label": "Tags (24)", "url": null, "status": "current", "children": [{"id": "tag-blog-tag-auto-dealer-software", "label": "Auto Dealer Software", "url": "/blog/tag/auto-dealer-software/", "status": "current", "role": "Blog tag archive."}, {"id": "tag-blog-tag-automotive", "label": "Automotive", "url": "/blog/tag/automotive/", "status": "current", "role": "Blog tag archive."}, {"id": "tag-blog-tag-business-communications", "label": "Business Communications", "url": "/blog/tag/business-communications/", "status": "current", "role": "Blog tag archive."}, {"id": "tag-blog-tag-business-texting", "label": "Business Texting", "url": "/blog/tag/business-texting/", "status": "current", "role": "Blog tag archive."}, {"id": "tag-blog-tag-covid-19", "label": "COVID-19", "url": "/blog/tag/covid-19/", "status": "current", "role": "Blog tag archive."}, {"id": "tag-blog-tag-crm-software", "label": "CRM Software", "url": "/blog/tag/crm-software/", "status": "current", "role": "Blog tag archive."}, {"id": "tag-blog-tag-hipaa", "label": "HIPAA", "url": "/blog/tag/hipaa/", "status": "current", "role": "Blog tag archive."}, {"id": "tag-blog-tag-home-services", "label": "Home Services", "url": "/blog/tag/home-services/", "status": "current", "role": "Blog tag archive."}, {"id": "tag-blog-tag-incentives", "label": "Incentives", "url": "/blog/tag/incentives/", "status": "current", "role": "Blog tag archive."}, {"id": "tag-blog-tag-it-best-practices", "label": "IT Best Practices", "url": "/blog/tag/it-best-practices/", "status": "current", "role": "Blog tag archive."}, {"id": "tag-blog-tag-job-descriptions", "label": "Job Descriptions", "url": "/blog/tag/job-descriptions/", "status": "current", "role": "Blog tag archive."}, {"id": "tag-blog-tag-loyal-users", "label": "Loyal Users", "url": "/blog/tag/loyal-users/", "status": "current", "role": "Blog tag archive."}, {"id": "tag-blog-tag-month-end-close", "label": "Month End Close", "url": "/blog/tag/month-end-close/", "status": "current", "role": "Blog tag archive."}, {"id": "tag-blog-tag-privacy", "label": "Privacy", "url": "/blog/tag/privacy/", "status": "current", "role": "Blog tag archive."}, {"id": "tag-blog-tag-real-green", "label": "Real Green", "url": "/blog/tag/real-green/", "status": "current", "role": "Blog tag archive."}, {"id": "tag-blog-tag-reputation-management", "label": "Reputation Management", "url": "/blog/tag/reputation-management/", "status": "current", "role": "Blog tag archive."}, {"id": "tag-blog-tag-technology", "label": "Technology", "url": "/blog/tag/technology/", "status": "current", "role": "Blog tag archive."}, {"id": "tag-blog-tag-text-messaging", "label": "Text Messaging", "url": "/blog/tag/text-messaging/", "status": "current", "role": "Blog tag archive."}, {"id": "tag-blog-tag-text-vs-email-stats", "label": "Text Vs Email Stats", "url": "/blog/tag/text-vs-email-stats/", "status": "current", "role": "Blog tag archive."}, {"id": "tag-blog-tag-thank-you", "label": "Thank You", "url": "/blog/tag/thank-you/", "status": "current", "role": "Blog tag archive."}, {"id": "tag-blog-tag-unemployment", "label": "Unemployment", "url": "/blog/tag/unemployment/", "status": "current", "role": "Blog tag archive."}, {"id": "tag-blog-tag-user-experience", "label": "User Experience", "url": "/blog/tag/user-experience/", "status": "current", "role": "Blog tag archive."}, {"id": "tag-blog-tag-voicemail-stinks", "label": "Voicemail Stinks", "url": "/blog/tag/voicemail-stinks/", "status": "current", "role": "Blog tag archive."}, {"id": "tag-blog-tag-workflow", "label": "Workflow", "url": "/blog/tag/workflow/", "status": "current", "role": "Blog tag archive."}]}]}, {"id": "legacy-group", "label": "Legacy / Standalone Landing Pages", "url": null, "status": "current", "role": "Older one-off pages built for individual Captivated customers or campaigns; still part of the current architecture.", "q1action": "No specific Q1 change assigned.", "children": [{"id": "texting-for-medical-spa-and-healthcare-practices", "label": "Medical Spa & Healthcare (legacy)", "url": "/texting-for-medical-spa-and-healthcare-practices/", "status": "review", "role": "Older standalone Healthcare/Medical Spa landing page that predates /industries/healthcare/.", "q1action": "Review / Consolidation: compared against /industries/healthcare/ during Q1 as part of the legacy-overlap review. Remains live in the current architecture — no redirect or removal decision has been finalized."}, {"id": "communication-software-for-automotive-car-dealerships", "label": "Automotive Dealerships (legacy)", "url": "/communication-software-for-automotive-car-dealerships/", "status": "review", "role": "Older standalone Automotive/dealership landing page that predates /industries/automotive/.", "q1action": "Review / Consolidation: compared against /industries/automotive/ during Q1 as part of the legacy-overlap review. Remains live in the current architecture — no redirect or removal decision has been finalized."}, {"id": "subaru", "label": "Subaru", "url": "/subaru/", "status": "current", "children": [{"id": "subaru-love-encore-re-delivery-program", "label": "Subaru Love-Encore Program", "url": "/subaru-love-encore-re-delivery-program/", "status": "current"}]}, {"id": "captivated-virtual-tour-online-demo-duplicate-8326", "label": "Virtual Tour Demo (duplicate)", "url": "/captivated-virtual-tour-online-demo-duplicate-8326/", "status": "current", "role": "Legacy duplicate landing page (site-labeled “Duplicate — #8326”)."}, {"id": "example-communication-timeline-for-customer-appointments", "label": "Example Communication Timeline", "url": "/example-communication-timeline-for-customer-appointments/", "status": "current"}, {"id": "text-us-kiosk-group", "label": "Text Us Kiosk", "url": null, "status": "current", "role": "QR/kiosk landing pages built for individual customers.", "children": [{"id": "text-us-kiosk-advantage-management", "label": "Advantage Management", "url": "/text-us-kiosk/advantage-management.com/", "status": "current"}, {"id": "text-us-kiosk-firstfree", "label": "First Free Church", "url": "/text-us-kiosk/firstfree.org/", "status": "current"}, {"id": "text-us-kiosk-somerset-patriots", "label": "Somerset Patriots", "url": "/text-us-kiosk/somersetpatriots.com/", "status": "current"}, {"id": "text-us-kiosk-rural-inn", "label": "The Rural Inn", "url": "/text-us-kiosk/theruralinn.com/", "status": "current"}]}]}, {"id": "legal-hub", "label": "Legal (Footer Link)", "url": null, "status": "current", "role": "Legal and policy pages — Terms, Privacy, data-request, and billing terms — consolidated into a single footer link, modeled on how Podium organizes the same content.", "q1action": "No specific Q1 change assigned.", "children": [{"id": "privacy-policy", "label": "Privacy Policy", "url": "/privacy-policy/", "status": "current"}, {"id": "terms-conditions", "label": "Terms & Conditions", "url": "/terms-conditions/", "status": "current"}, {"id": "terms-and-privacy-policy-updates", "label": "Terms & Privacy Updates", "url": "/terms-and-privacy-policy-updates/", "status": "current"}, {"id": "data-subject-access-request-form", "label": "Data Subject Access Request Form", "url": "/data-subject-access-request-form/", "status": "current"}, {"id": "express-pay-terms", "label": "Express Pay Terms", "url": "/express-pay-terms/", "status": "current"}]}];
+</script>
+<script>
+(function () {
+  'use strict';
+
+  var STATUS_META = {
+    current: { label: 'Current', letter: null, color: null },
+    opt:     { label: 'Q1 Optimization', letter: 'O', color: 'var(--opt)' },
+    new:     { label: 'New Q1 Page', letter: 'N', color: 'var(--new)' },
+    review:  { label: 'Review / Consolidation', letter: 'R', color: 'var(--review)' }
+  };
+
+  var STATUS_HEX = { opt: '#B08A3E', new: '#4C6B4F', review: '#AD5A34', current: '#8B9096' };
+
+  var BASE_URL = 'https://captivated.works';
+
+  var state = {
+    view: 'proposed', // 'current' | 'proposed' | 'changes'
+    search: ''
+  };
+
+  var NODE_INDEX = {}; // id -> { data, el, boxEl, breadcrumb: [labels] }
+
+  // ---------------------------------------------------------------
+  // Build DOM tree from DATA
+  // ---------------------------------------------------------------
+  function buildBox(node, depth) {
+    var lvl = depth === 0 ? 'lvl1' : (depth === 1 ? 'lvl2' : 'lvl3');
+    var box = document.createElement('span');
+    box.className = 'box ' + lvl;
+    if (node.status && node.status !== 'current') {
+      box.className += ' flag-' + node.status;
+    }
+    var label = document.createElement('span');
+    label.className = 'label';
+    label.textContent = node.label;
+    box.appendChild(label);
+    var meta = STATUS_META[node.status] || STATUS_META.current;
+    if (meta.letter) {
+      var badge = document.createElement('span');
+      badge.className = 'badge b-' + node.status;
+      badge.textContent = meta.letter;
+      box.appendChild(badge);
+    }
+    return box;
+  }
+
+  function buildTip() {
+    var tip = document.createElement('span');
+    tip.className = 'tip';
+    var crumb = document.createElement('span');
+    crumb.className = 'tip-crumb';
+    var extra = document.createElement('span');
+    extra.className = 'tip-extra';
+    tip.appendChild(crumb);
+    tip.appendChild(extra);
+    return { tip: tip, crumb: crumb, extra: extra };
+  }
+
+  function tipExtraText(node) {
+    if (node.role) return node.role;
+    return '';
+  }
+
+  function renderNode(node, depth, breadcrumb) {
+    var myBreadcrumb = breadcrumb.concat([node.label]);
+    var hasChildren = node.children && node.children.length > 0;
+    var el;
+
+    if (hasChildren) {
+      el = document.createElement('details');
+      el.className = 'node';
+      el.open = true;
+      el.setAttribute('data-id', node.id);
+
+      var summary = document.createElement('summary');
+      summary.className = 'box-row';
+      var chevron = document.createElement('span');
+      chevron.className = 'chevron';
+      chevron.textContent = '\u25B8';
+      summary.appendChild(chevron);
+      var box = buildBox(node, depth);
+      summary.appendChild(box);
+      var tipParts = buildTip();
+      tipParts.extra.textContent = tipExtraText(node);
+      summary.appendChild(tipParts.tip);
+      el.appendChild(summary);
+
+      summary.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (e.target.closest('.chevron')) {
+          el.open = !el.open;
+        } else {
+          showDetail(node.id);
+        }
+      });
+
+      var childrenWrap = document.createElement('div');
+      childrenWrap.className = 'children-wrap';
+      node.children.forEach(function (child) {
+        childrenWrap.appendChild(renderNode(child, depth + 1, myBreadcrumb));
+      });
+      el.appendChild(childrenWrap);
+
+      NODE_INDEX[node.id] = { data: node, el: el, boxEl: box, breadcrumb: myBreadcrumb };
+    } else {
+      el = document.createElement('div');
+      el.className = 'node leaf';
+      el.setAttribute('data-id', node.id);
+
+      var row = document.createElement('div');
+      row.className = 'box-row';
+      var spacer = document.createElement('span');
+      spacer.className = 'leaf-spacer';
+      row.appendChild(spacer);
+      var box2 = buildBox(node, depth);
+      row.appendChild(box2);
+      var tipParts2 = buildTip();
+      tipParts2.extra.textContent = tipExtraText(node);
+      row.appendChild(tipParts2.tip);
+      el.appendChild(row);
+
+      row.addEventListener('click', function () {
+        showDetail(node.id);
+      });
+
+      NODE_INDEX[node.id] = { data: node, el: el, boxEl: box2, breadcrumb: myBreadcrumb };
+    }
+
+    return el;
+  }
+
+  function renderTree() {
+    var container = document.getElementById('treeContainer');
+    container.innerHTML = '';
+    NODE_INDEX = {};
+    // Slightly wider gap after these columns, to visually separate clusters
+    // (commercial expansion | site sections | trust & conversion | content | legacy)
+    var gapAfter = { 'alternatives': true, 'pricing': true, 'demo-conversion': true, 'legacy-group': true };
+    DATA.forEach(function (colNode) {
+      var col = document.createElement('div');
+      col.className = 'col' + (gapAfter[colNode.id] ? ' col-gap-after' : '');
+      col.appendChild(renderNode(colNode, 0, []));
+      container.appendChild(col);
+    });
+    // Collapse large branches by default
+    ['blog', 'legacy-group', 'legal-hub'].forEach(function (id) {
+      var entry = NODE_INDEX[id];
+      if (entry && entry.el.tagName === 'DETAILS') entry.el.open = false;
+    });
+    // Collapse blog sub-groups by default too
+    ['blog-articles-group', 'blog-tags-group'].forEach(function (id) {
+      var entry = NODE_INDEX[id];
+      if (entry && entry.el.tagName === 'DETAILS') entry.el.open = false;
+    });
+  }
+
+  // ---------------------------------------------------------------
+  // Detail panel
+  // ---------------------------------------------------------------
+  function showDetail(id) {
+    var entry = NODE_INDEX[id];
+    if (!entry) return;
+    var node = entry.data;
+    var meta = STATUS_META[node.status] || STATUS_META.current;
+
+    document.getElementById('detailTitle').textContent = node.label;
+    var chip = document.getElementById('detailStatusChip');
+    chip.textContent = meta.label;
+    chip.style.background = STATUS_HEX[node.status] || STATUS_HEX.current;
+
+    var panel = document.getElementById('detailPanel');
+    panel.style.borderLeftColor = STATUS_HEX[node.status] || STATUS_HEX.current;
+
+    var body = document.getElementById('detailBody');
+    body.innerHTML = '';
+
+    function row(label, valueHtml) {
+      var r = document.createElement('div');
+      r.className = 'detail-row';
+      var k = document.createElement('div');
+      k.className = 'detail-k';
+      k.textContent = label;
+      var v = document.createElement('div');
+      v.className = 'detail-v';
+      v.innerHTML = valueHtml;
+      r.appendChild(k);
+      r.appendChild(v);
+      body.appendChild(r);
+    }
+
+    if (node.url) {
+      var full = BASE_URL + node.url;
+      row('URL', '<a href="' + full + '" target="_blank" rel="noopener">' + node.url + '</a>');
+    } else {
+      row('URL', '— (organizational grouping, no single URL)');
+    }
+
+    row('Current / Proposed Role', esc(node.role) || '\u2014');
+
+    var q1 = node.q1action || 'No specific Q1 change assigned.';
+    row('Q1 Action', esc(q1));
+
+    var parentPath = entry.breadcrumb.slice(0, -1);
+    row('Parent / Architectural Relationship', parentPath.length ? esc('Home \u2192 ' + parentPath.join(' \u2192 ')) : 'Top-level (direct from Home)');
+
+    if (node.searchRole) {
+      var dir = node.direction ? ' \u2014 ' + esc(node.direction) : '';
+      row('Search Role', esc(node.searchRole) + dir);
+    }
+
+    panel.hidden = false;
+  }
+
+  function esc(s) {
+    if (!s) return '';
+    var d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  // ---------------------------------------------------------------
+  // Visibility engine (view filter + search, combined)
+  // ---------------------------------------------------------------
+  function passesView(node) {
+    if (state.view === 'current') return node.status !== 'new';
+    if (state.view === 'changes') return node.status !== 'current';
+    return true; // proposed
+  }
+
+  function passesSearch(node) {
+    if (!state.search) return true;
+    var term = state.search;
+    if (node.label && node.label.toLowerCase().indexOf(term) !== -1) return true;
+    if (node.url && node.url.toLowerCase().indexOf(term) !== -1) return true;
+    return false;
+  }
+
+  // Returns {visible, selfQualifies}
+  function computeVisibility(node) {
+    // Purely organizational groupings (no real URL) never qualify on their own —
+    // they only ever appear as structural context around a visible descendant.
+    // This keeps a wholly-new branch like "Alternatives" out of the Current Site
+    // view entirely, instead of showing an empty/misleading folder.
+    var selfQualifies = !!node.url && passesView(node) && passesSearch(node);
+    var anyChildVisible = false;
+    if (node.children) {
+      node.children.forEach(function (child) {
+        var res = computeVisibility(child);
+        if (res.visible) anyChildVisible = true;
+      });
+    }
+    var visible = selfQualifies || anyChildVisible;
+    var entry = NODE_INDEX[node.id];
+    if (entry) {
+      entry.el.setAttribute('data-hidden', visible ? '0' : '1');
+      var contextOnly = visible && !selfQualifies && anyChildVisible;
+      if (contextOnly) entry.boxEl.classList.add('context-only');
+      else entry.boxEl.classList.remove('context-only');
+      var matchTerm = state.search && node.label && node.label.toLowerCase().indexOf(state.search) !== -1;
+      if (matchTerm) entry.boxEl.classList.add('search-match');
+      else entry.boxEl.classList.remove('search-match');
+      if (visible && (state.view === 'changes' || state.search) && entry.el.tagName === 'DETAILS') {
+        entry.el.open = true;
+      }
+    }
+    return { visible: visible, selfQualifies: selfQualifies };
+  }
+
+  function applyFilters() {
+    DATA.forEach(function (n) { computeVisibility(n); });
+  }
+
+  function setActiveViewButton() {
+    ['viewCurrent', 'viewProposed', 'viewChanges'].forEach(function (id) {
+      document.getElementById(id).classList.remove('active');
+    });
+    var map = { current: 'viewCurrent', proposed: 'viewProposed', changes: 'viewChanges' };
+    document.getElementById(map[state.view]).classList.add('active');
+  }
+
+  function applyDefaultOpenState() {
+    Object.keys(NODE_INDEX).forEach(function (id) {
+      var entry = NODE_INDEX[id];
+      if (entry.el.tagName !== 'DETAILS') return;
+      var collapseByDefault = (id === 'blog' || id === 'legacy-group' || id === 'legal-hub' || id === 'blog-articles-group' || id === 'blog-tags-group');
+      entry.el.open = !collapseByDefault;
+    });
+  }
+
+  // ---------------------------------------------------------------
+  // Summary strip + caveat + footer
+  // ---------------------------------------------------------------
+  function countStatus(node, status, acc) {
+    if (node.url && node.status === status) acc.n++;
+    (node.children || []).forEach(function (c) { countStatus(c, status, acc); });
+  }
+  function countAllUrls(node, acc) {
+    if (node.url) acc.n++;
+    (node.children || []).forEach(function (c) { countAllUrls(c, acc); });
+  }
+
+  function renderSummary() {
+    var currentAcc = { n: 1 }; // +1 for Home, which lives outside DATA
+    DATA.forEach(function (n) { countAllUrls(n, currentAcc); });
+    var newAcc = { n: 0 }, optAcc = { n: 0 }, reviewAcc = { n: 0 };
+    DATA.forEach(function (n) {
+      countStatus(n, 'new', newAcc);
+      countStatus(n, 'opt', optAcc);
+      countStatus(n, 'review', reviewAcc);
+    });
+    var currentOnly = currentAcc.n - newAcc.n; // exclude the 7 new pages from "current" count
+    var optExcludingProof = optAcc.n - 1; // Success Stories counted separately as proof asset
+
+    var stats = [
+      { num: currentOnly, label: 'Current site URLs' },
+      { num: newAcc.n, label: 'New Q1 commercial pages' },
+      { num: optExcludingProof, label: 'Existing pages receiving Q1 optimization' },
+      { num: 1, label: 'Proof / reputation asset (Success Stories)' },
+      { num: reviewAcc.n, label: 'Legacy pages under overlap review' }
+    ];
+    var strip = document.getElementById('summaryStrip');
+    strip.innerHTML = '';
+    stats.forEach(function (s) {
+      var chip = document.createElement('div');
+      chip.className = 'stat-chip';
+      chip.innerHTML = '<div class="stat-num">' + s.num + '</div><div class="stat-label">' + s.label + '</div>';
+      strip.appendChild(chip);
+    });
+  }
+
+  function renderFooter() {
+    document.getElementById('footerNote').innerHTML =
+      'This sitemap reflects captivated.works as it exists today, plus the seven first-wave commercial pages and one comparison page committed in the 90-Day SEO Plan. Pages shown without a status badge are unchanged in Q1. Most of the site remains structurally intact \u2014 the proposed architecture is primarily an expansion of the Product&nbsp;&gt;&nbsp;Features cluster, plus Alternatives, targeted optimization of six existing pages, proof work on Success Stories, and review of two legacy pages. ServiceTitan and Jobber integration pages are conditional only and are not shown as sitemap nodes.';
+  }
+
+  // ---------------------------------------------------------------
+  // Wire up controls
+  // ---------------------------------------------------------------
+  function init() {
+    renderTree();
+    applyDefaultOpenState();
+    renderSummary();
+    renderFooter();
+    setActiveViewButton();
+    applyFilters();
+
+    document.getElementById('viewCurrent').addEventListener('click', function () {
+      state.view = 'current'; setActiveViewButton(); applyFilters();
+    });
+    document.getElementById('viewProposed').addEventListener('click', function () {
+      state.view = 'proposed'; setActiveViewButton(); applyFilters();
+    });
+    document.getElementById('viewChanges').addEventListener('click', function () {
+      state.view = 'changes'; setActiveViewButton(); applyFilters();
+    });
+
+    document.getElementById('expandAll').addEventListener('click', function () {
+      Object.keys(NODE_INDEX).forEach(function (id) {
+        var e = NODE_INDEX[id];
+        if (e.el.tagName === 'DETAILS') e.el.open = true;
+      });
+    });
+    document.getElementById('collapseAll').addEventListener('click', function () {
+      Object.keys(NODE_INDEX).forEach(function (id) {
+        var e = NODE_INDEX[id];
+        if (e.el.tagName === 'DETAILS') e.el.open = false;
+      });
+    });
+    document.getElementById('resetView').addEventListener('click', function () {
+      state.view = 'proposed';
+      state.search = '';
+      document.getElementById('searchInput').value = '';
+      document.getElementById('searchClear').classList.remove('show');
+      setActiveViewButton();
+      applyDefaultOpenState();
+      applyFilters();
+      document.getElementById('detailPanel').hidden = true;
+    });
+
+    var searchInput = document.getElementById('searchInput');
+    var searchClear = document.getElementById('searchClear');
+    searchInput.addEventListener('input', function () {
+      state.search = searchInput.value.trim().toLowerCase();
+      searchClear.classList.toggle('show', !!searchInput.value);
+      if (!state.search) applyDefaultOpenState();
+      applyFilters();
+    });
+    searchClear.addEventListener('click', function () {
+      searchInput.value = '';
+      state.search = '';
+      searchClear.classList.remove('show');
+      applyDefaultOpenState();
+      applyFilters();
+      searchInput.focus();
+    });
+
+    document.getElementById('detailClose').addEventListener('click', function () {
+      document.getElementById('detailPanel').hidden = true;
+    });
+
+    document.getElementById('homeBox').addEventListener('click', function () {
+      document.getElementById('detailTitle').textContent = 'Home';
+      var chip = document.getElementById('detailStatusChip');
+      chip.textContent = 'Current';
+      chip.style.background = STATUS_HEX.current;
+      document.getElementById('detailPanel').style.borderLeftColor = STATUS_HEX.current;
+      var body = document.getElementById('detailBody');
+      body.innerHTML =
+        '<div class="detail-row"><div class="detail-k">URL</div><div class="detail-v"><a href="' + BASE_URL + '/" target="_blank" rel="noopener">/</a></div></div>' +
+        '<div class="detail-row"><div class="detail-k">Current / Proposed Role</div><div class="detail-v">Homepage. 74.8% of YTD organic landing-page sessions begin here \u2014 the 90-Day Plan aims to distribute acquisition across product, capability, industry, and comparison pages instead.</div></div>' +
+        '<div class="detail-row"><div class="detail-k">Q1 Action</div><div class="detail-v">No specific Q1 change assigned.</div></div>';
+      document.getElementById('detailPanel').hidden = false;
+    });
+
+    // Breadcrumb tooltips
+    Object.keys(NODE_INDEX).forEach(function (id) {
+      var entry = NODE_INDEX[id];
+      var crumbEl = entry.el.querySelector(':scope > .box-row > .tip > .tip-crumb, :scope > summary > .tip > .tip-crumb');
+      if (crumbEl) {
+        var path = entry.breadcrumb.slice(0, -1);
+        crumbEl.textContent = 'Home' + (path.length ? '  \u2192  ' + path.join('  \u2192  ') : '');
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+
+</script>
+</body>
+</html>
